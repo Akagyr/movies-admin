@@ -9,7 +9,7 @@ import {
   deleteDoc,
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { Category, Movie } from '../../types';
+import { Category, Movie, User } from '../../types';
 
 export async function getDBElement(collection: DocumentReference<DocumentData, DocumentData>) {
   try {
@@ -67,22 +67,32 @@ export async function createDBCategory(category: Category) {
   }
 }
 
-export async function updateDBCategory(categoryData: Category) {
-  try {
-    await updateDoc(doc(db, 'categories', categoryData.slug), categoryData);
-    return true;
-  } catch (error) {
-    console.error(`Ошибка обновления категории!`, error);
-    return false;
-  }
-}
-
 export async function deleteDBCategory(slug: string) {
   try {
     await deleteDoc(doc(db, 'categories', slug));
     return true;
   } catch (error) {
-    console.error(`Ошибка удаления категории!`, error);
+    console.error('Ошибка удаления категории!', error);
+    return false;
+  }
+}
+
+export async function updateDBUser(userData: User) {
+  try {
+    await updateDoc(doc(db, 'users', userData.uid), userData);
+    return true;
+  } catch (error) {
+    console.error('Ошибка обновления пользователя!', error);
+    return false;
+  }
+}
+
+export async function deleteDBUser(uid: string) {
+  try {
+    await deleteDoc(doc(db, 'users', uid));
+    return true;
+  } catch (error) {
+    console.error('Ошибка удаления пользователя!', error);
     return false;
   }
 }

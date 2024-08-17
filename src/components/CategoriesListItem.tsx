@@ -8,7 +8,7 @@ export default function CategoriesListItem({
 }: {
   category: Category;
 }) {
-  const deleteCategory = async (slug: string) => {
+  const handleDeleteCategory = async (slug: string) => {
     try {
       const request = await deleteDBCategory(slug);
       if (request) {
@@ -25,7 +25,7 @@ export default function CategoriesListItem({
     <div className='flex gap-[20px] items-center justify-between bg-red-800/10 rounded-lg py-[10px] px-[20px]'>
       <h2 className='font-semibold'>{category.name}</h2>
       <button
-        onClick={() => deleteCategory(category.slug)}
+        onClick={() => handleDeleteCategory(category.slug)}
         className='px-[15px] py-[8px] bg-red-800 w-fit rounded-lg'
       >
         Удалить
