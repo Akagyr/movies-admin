@@ -4,6 +4,7 @@ import MoviesPage from './pages/MoviesPage';
 import MainLayout from './layouts/MainLayout';
 import LoginLayout from './layouts/LoginLayout';
 import 'react-toastify/dist/ReactToastify.css';
+import 'react-responsive-modal/styles.css';
 import { ToastContainer } from 'react-toastify';
 import UsersPage from './pages/UsersPage';
 import CategoriesPage from './pages/CategoriesPage';
@@ -15,11 +16,11 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<MoviesPage />} />
-          <Route path='/users' element={<UsersPage />} />
-          <Route path='/categories' element={<CategoriesPage />} />
+          <Route path='users' element={<UsersPage />} />
+          <Route path='categories' element={<CategoriesPage />} />
         </Route>
         <Route element={<LoginLayout />}>
-          <Route path='/login' element={<LoginPage />} />
+          <Route path='login' element={<LoginPage />} />
         </Route>
       </Routes>
     </>

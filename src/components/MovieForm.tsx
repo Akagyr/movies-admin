@@ -2,15 +2,11 @@
 
 import { Movie, Rate } from '../../types';
 import CustomInput from './custom/CustomInput';
-import {
-  addDBMovie,
-  getDBElement,
-  updateDBMovie,
-} from '../database/databaseServices';
-import slugify from 'slugify';
+import { createDBMovie, getDBElement, updateDBMovie } from '../database/databaseServices';
 import { useState, ChangeEvent } from 'react';
 import { collection, doc } from 'firebase/firestore';
 import { db } from '../database/firebase';
+import { slugCreate } from '../helpers/slugHelper';
 
 type MovieForm = {
   image: {
@@ -50,7 +46,7 @@ type MovieForm = {
   };
 };
 
-export default function AdminMovieForm({
+export default function MovieForm({
   movie,
   setIsOpenModal,
   setMovies,
@@ -177,30 +173,23 @@ export default function AdminMovieForm({
 
     if (movie) {
       await updateDBMovie({
-        movieData: {
-          slug: movie.slug,
-          image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
-          name: formData.name.text.trim() ? formData.name.text.trim() : movie.name,
-          // rates: formData.rates.text ? formData.rates.text.toString() : movie.rates,
-          category: formData.category.text.trim() ? formData.category.text.trim() : movie.category,
-          duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
-          age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
-          release_date: formData.release_date.text.trim()
-            ? formData.release_date.text.trim()
-            : movie.release_date,
-          country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
-          trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
-          added_date: movie.added_date,
-        },
+        slug: movie.slug,
+        image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
+        name: formData.name.text.trim() ? formData.name.text.trim() : movie.name,
+        // rates: formData.rates.text ? formData.rates.text.toString() : movie.rates,
+        category: formData.category.text.trim() ? formData.category.text.trim() : movie.category,
+        duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
+        age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
+        release_date: formData.release_date.text.trim()
+          ? formData.release_date.text.trim()
+          : movie.release_date,
+        country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
+        trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
+        added_date: movie.added_date,
       });
       // setMovies((await getDBCollection(collection(db, 'movies'))) as Movie[]);
     } else {
-      const slug = slugify(formData.name.text, {
-        replacement: '-',
-        lower: true,
-        strict: true,
-        locale: 'vi',
-      });
+      const slug = slugCreate(formData.name.text);
 
       // const moviesDB = await getDBCollection(collection(db, 'movies'));
       // const isCreatedQuestion = moviesDB!.find((el) => el.slug === slug);
@@ -210,20 +199,18 @@ export default function AdminMovieForm({
       //   return;
       // }
 
-      await addDBMovie({
-        movie: {
-          slug: slug,
-          image: formData.image.text.trim(),
-          name: formData.name.text.trim(),
-          // rates: formData.rates.text ? formData.rates.text.toString() : '0',
-          category: formData.category.text.trim(),
-          duration: formData.duration.text.trim(),
-          age: formData.age.text.trim(),
-          release_date: formData.release_date.text.trim(),
-          country: formData.country.text.trim(),
-          trailer: formData.trailer.text.trim(),
-          added_date: Date.now().toString(),
-        },
+      await createDBMovie({
+        slug: slug,
+        image: formData.image.text.trim(),
+        name: formData.name.text.trim(),
+        // rates: formData.rates.text ? formData.rates.text.toString() : '0',
+        category: formData.category.text.trim(),
+        duration: formData.duration.text.trim(),
+        age: formData.age.text.trim(),
+        release_date: formData.release_date.text.trim(),
+        country: formData.country.text.trim(),
+        trailer: formData.trailer.text.trim(),
+        added_date: Date.now().toString(),
       });
 
       const movieDB = await getDBElement(doc(db, 'movies', slug));

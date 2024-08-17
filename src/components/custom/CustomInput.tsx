@@ -36,8 +36,8 @@ export default function CustomInput({
           placeholder={placeholder}
           required={required}
           className={`${styles ? `${styles} ` : ''}${
-            error ? `border-[1px] border-red-600` : 'border-none'
-          } text-sm rounded-lg block w-full py-2 px-3 bg-neutral-800 placeholder-gray-400 text-white`}
+            error ? `border-[1px] border-red-700` : 'border-none'
+          } rounded-lg block w-full py-[10px] px-[15px] bg-neutral-800 placeholder-gray-400 text-white`}
         />
       ) : (
         <input
@@ -48,11 +48,11 @@ export default function CustomInput({
           placeholder={placeholder}
           required={required}
           className={`${styles ? `${styles} ` : ''}${
-            error ? `border-[1px] border-red-600` : 'border-none'
-          } text-sm rounded-lg block w-full py-2 px-3 bg-neutral-800 placeholder-gray-400 text-white`}
+            error ? `border-[1px] border-red-700` : 'border-none'
+          } rounded-lg block w-full py-[10px] px-[15px] bg-neutral-800 placeholder-gray-400 text-white`}
         />
       )}
-      <div className='text-red-600 text-sm mt-[5px] pl-[15px]'>{error ? error : ''}</div>
+      <div className='text-red-600 font-medium text-sm mt-[5px] pl-[10px]'>{error ? error : ''}</div>
     </>
   );
 }
