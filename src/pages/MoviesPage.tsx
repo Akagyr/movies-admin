@@ -1,16 +1,35 @@
-import { Link } from 'react-router-dom';
 import useGetMovies from '../hooks/useGetMovies';
 import MoviesList from '../components/MoviesList';
 import MovieForm from '../components/MovieForm';
+import { useState } from 'react';
+import { Movie } from '../../types';
+import CustomModal from '../components/custom/CustomModal';
 
 export default function MoviesPage() {
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const movies = useGetMovies();
 
   return (
     <>
-      <Link to='movie/create' className='block px-[15px] py-[8px] bg-green-800 w-fit rounded-lg'>Добавить новый фильм</Link>
-      {/* <MovieForm /> */}
-      <MoviesList movies={movies!} />
+      <CustomModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
+        <MovieForm
+          movie={currentMovie}
+          setCurrentMovie={setCurrentMovie}
+          setIsOpenModal={setIsOpenModal}
+        />
+      </CustomModal>
+      <button
+        onClick={() => setIsOpenModal(true)}
+        className='px-[15px] py-[8px] bg-green-800 w-fit rounded-lg'
+      >
+        Добавить новый фильм
+      </button>
+      <MoviesList
+        movies={movies!}
+        setCurrentMovie={setCurrentMovie}
+        setIsOpenModal={setIsOpenModal}
+      />
     </>
   );
 }

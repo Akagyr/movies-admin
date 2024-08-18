@@ -18,6 +18,7 @@ export default function CustomModal({
         modal: {
           backgroundColor: '#19181b',
           borderRadius: '8px',
+          padding: '30px',
         },
       }}
       center

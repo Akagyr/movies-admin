@@ -3,14 +3,31 @@ import { Movie } from '../../types';
 import { deleteDBMovie } from '../database/databaseServices';
 import { toast } from 'react-toastify';
 
-export default function MoviesListItem({ movie }: { movie: Movie }) {
-  const deleteMovie = async (slug: string) => {
+export default function MoviesListItem({
+  movie,
+  setCurrentMovie,
+  setIsOpenModal,
+}: {
+  movie: Movie;
+  setCurrentMovie: (value: Movie) => void;
+  setIsOpenModal: (value: boolean) => void;
+}) {
+  const handleDeleteMovie = async (slug: string) => {
     try {
-      // await deleteDBMovie({ slug });
-      toast.success('Успешно удален!');
+      const request = await deleteDBMovie(slug);
+      if (request) {
+        toast.success('Успешно удален!');
+      } else {
+        toast.error('Ошибка удаления пользователя!');
+      }
     } catch {
-      toast.error('Ошибка при удалении! Попробуйте позже!');
+      toast.error('Ошибка удаления пользователя!');
     }
+  };
+
+  const handleUpdateMovie = async () => {
+    setCurrentMovie(movie);
+    setIsOpenModal(true);
   };
 
   return (
@@ -23,14 +40,14 @@ export default function MoviesListItem({ movie }: { movie: Movie }) {
       <p>{movie.age}</p>
       <p>{movie.duration}</p>
       <div className='flex flex-col justify-evenly h-full items-center'>
-        <Link
-          to={`${movie.slug}/update`}
+        <button
+          onClick={() => handleUpdateMovie()}
           className='px-[10px] py-[8px] bg-blue-800 w-fit rounded-lg'
         >
           Изменить
-        </Link>
+        </button>
         <button
-          onClick={() => deleteMovie(movie.slug)}
+          onClick={() => handleDeleteMovie(movie.slug)}
           className='px-[15px] py-[8px] bg-red-800 w-fit rounded-lg'
         >
           Удалить

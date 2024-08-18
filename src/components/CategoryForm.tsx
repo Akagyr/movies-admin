@@ -61,8 +61,8 @@ export default function CategoryForm({
 
     const slug = slugCreate(formData.name.text);
 
-    const dbMovie = await getDBElement(doc(db, 'categories', slug));
-    if (dbMovie) {
+    const dbCategory = await getDBElement(doc(db, 'categories', slug));
+    if (dbCategory) {
       toast.error('Такая категория уже создана!');
     } else {
       const request = await createDBCategory({

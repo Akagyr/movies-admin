@@ -1,12 +1,11 @@
-'use client';
-
-import { Movie, Rate } from '../../types';
+import { Movie } from '../../types';
 import CustomInput from './custom/CustomInput';
 import { createDBMovie, getDBElement, updateDBMovie } from '../database/databaseServices';
-import { useState, ChangeEvent } from 'react';
-import { collection, doc } from 'firebase/firestore';
+import { useState, ChangeEvent, useEffect } from 'react';
+import { doc } from 'firebase/firestore';
 import { db } from '../database/firebase';
 import { slugCreate } from '../helpers/slugHelper';
+import { toast } from 'react-toastify';
 
 type MovieForm = {
   image: {
@@ -17,9 +16,6 @@ type MovieForm = {
     text: string;
     error: string | null;
   };
-  // rates: {
-  //   text: string | Rate[];
-  // };
   category: {
     text: string;
     error: string | null;
@@ -46,53 +42,91 @@ type MovieForm = {
   };
 };
 
+const initialState = {
+  image: {
+    text: '',
+    error: null,
+  },
+  name: {
+    text: '',
+    error: null,
+  },
+  category: {
+    text: '',
+    error: null,
+  },
+  duration: {
+    text: '',
+    error: null,
+  },
+  age: {
+    text: '',
+    error: null,
+  },
+  release_date: {
+    text: '',
+    error: null,
+  },
+  country: {
+    text: '',
+    error: null,
+  },
+  trailer: {
+    text: '',
+    error: null,
+  },
+};
+
 export default function MovieForm({
   movie,
   setIsOpenModal,
-  setMovies,
+  setCurrentMovie,
 }: {
-  movie?: Movie;
+  movie: Movie | null;
   setIsOpenModal: (value: boolean) => void;
-  setMovies: (value: Movie[]) => void;
+  setCurrentMovie: (value: Movie | null) => void;
 }) {
-  const initialState = {
-    image: {
-      text: movie ? movie.image : '',
-      error: null,
-    },
-    name: {
-      text: movie ? movie.name : '',
-      error: null,
-    },
-    // rates: {
-    //   text: movie ? movie.rates : '',
-    // },
-    category: {
-      text: movie ? movie.category : '',
-      error: null,
-    },
-    duration: {
-      text: movie ? movie.duration : '',
-      error: null,
-    },
-    age: {
-      text: movie ? movie.age : '',
-      error: null,
-    },
-    release_date: {
-      text: movie ? movie.release_date : '',
-      error: null,
-    },
-    country: {
-      text: movie ? movie.country : '',
-      error: null,
-    },
-    trailer: {
-      text: movie ? movie.trailer : '',
-      error: null,
-    },
-  };
   const [formData, setFormData] = useState<MovieForm>(initialState);
+
+  useEffect(() => {
+    if (movie) {
+      setFormData((prevState) => ({
+        ...prevState,
+        image: {
+          ...prevState.image,
+          text: movie.image,
+        },
+        name: {
+          ...prevState.name,
+          text: movie.name,
+        },
+        category: {
+          ...prevState.category,
+          text: movie.category,
+        },
+        duration: {
+          ...prevState.duration,
+          text: movie.duration,
+        },
+        age: {
+          ...prevState.age,
+          text: movie.age,
+        },
+        release_date: {
+          ...prevState.release_date,
+          text: movie.release_date,
+        },
+        country: {
+          ...prevState.country,
+          text: movie.country,
+        },
+        trailer: {
+          ...prevState.trailer,
+          text: movie.trailer,
+        },
+      }));
+    }
+  }, [movie]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -134,103 +168,116 @@ export default function MovieForm({
           ...prevState.image,
           error:
             image.text.trim() === ''
-              ? 'Поле не може бути пустим'
+              ? 'Поле не может быть пустым'
               : !isValidImageURL
               ? 'Поле должно быть ссылкой и начинатся с "https://static.hdrezka.ac/"'
               : image.error,
         },
         name: {
           ...prevState.name,
-          error: name.text.trim() === '' ? 'Поле не може бути пустим' : name.error,
+          error: name.text.trim() === '' ? 'Поле не может быть пустым' : name.error,
         },
         category: {
           ...prevState.category,
-          error: category.text.trim() === '' ? 'Поле не може бути пустим' : category.error,
+          error: category.text.trim() === '' ? 'Поле не может быть пустым' : category.error,
         },
         duration: {
           ...prevState.duration,
-          error: duration.text.trim() === '' ? 'Поле не може бути пустим' : duration.error,
+          error: duration.text.trim() === '' ? 'Поле не может быть пустым' : duration.error,
         },
         age: {
           ...prevState.age,
-          error: age.text.trim() === '' ? 'Поле не може бути пустим' : age.error,
+          error: age.text.trim() === '' ? 'Поле не может быть пустым' : age.error,
         },
         release_date: {
           ...prevState.release_date,
-          error: release_date.text.trim() === '' ? 'Поле не може бути пустим' : release_date.error,
+          error: release_date.text.trim() === '' ? 'Поле не может быть пустым' : release_date.error,
         },
         country: {
           ...prevState.country,
-          error: country.text.trim() === '' ? 'Поле не може бути пустим' : country.error,
+          error: country.text.trim() === '' ? 'Поле не может быть пустым' : country.error,
         },
         trailer: {
           ...prevState.trailer,
-          error: trailer.text.trim() === '' ? 'Поле не може бути пустим' : trailer.error,
+          error: trailer.text.trim() === '' ? 'Поле не может быть пустым' : trailer.error,
         },
       }));
       return;
     }
 
     if (movie) {
-      await updateDBMovie({
-        slug: movie.slug,
-        image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
-        name: formData.name.text.trim() ? formData.name.text.trim() : movie.name,
-        // rates: formData.rates.text ? formData.rates.text.toString() : movie.rates,
-        category: formData.category.text.trim() ? formData.category.text.trim() : movie.category,
-        duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
-        age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
-        release_date: formData.release_date.text.trim()
-          ? formData.release_date.text.trim()
-          : movie.release_date,
-        country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
-        trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
-        added_date: movie.added_date,
-      });
-      // setMovies((await getDBCollection(collection(db, 'movies'))) as Movie[]);
+      if (
+        image.text.trim() === movie.image &&
+        name.text.trim() === movie.name &&
+        category.text.trim() === movie.category &&
+        duration.text.trim() === movie.duration &&
+        age.text.trim() === movie.age &&
+        release_date.text.trim() === movie.release_date &&
+        country.text.trim() === movie.country &&
+        trailer.text.trim() === movie.trailer
+      ) {
+        toast.error(`У фильма не изменились данные!`);
+        return;
+      } else {
+        const request = await updateDBMovie({
+          slug: movie.slug,
+          image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
+          name: formData.name.text.trim() ? formData.name.text.trim() : movie.name,
+          category: formData.category.text.trim() ? formData.category.text.trim() : movie.category,
+          duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
+          age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
+          release_date: formData.release_date.text.trim()
+            ? formData.release_date.text.trim()
+            : movie.release_date,
+          country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
+          trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
+          added_date: movie.added_date,
+        });
+
+        request
+          ? toast.success('Данные пользователя успешно обновлены!')
+          : toast.error('Ошибка обновления данных пользователя!');
+      }
     } else {
       const slug = slugCreate(formData.name.text);
+      const dbMovie = await getDBElement(doc(db, 'movies', slug));
 
-      // const moviesDB = await getDBCollection(collection(db, 'movies'));
-      // const isCreatedQuestion = moviesDB!.find((el) => el.slug === slug);
-      // if (isCreatedQuestion) {
-      //   // setAlertMessageType('error');
-      //   // setAlertMessageText('Таке питання вже існує!');
-      //   return;
-      // }
-
-      await createDBMovie({
-        slug: slug,
-        image: formData.image.text.trim(),
-        name: formData.name.text.trim(),
-        // rates: formData.rates.text ? formData.rates.text.toString() : '0',
-        category: formData.category.text.trim(),
-        duration: formData.duration.text.trim(),
-        age: formData.age.text.trim(),
-        release_date: formData.release_date.text.trim(),
-        country: formData.country.text.trim(),
-        trailer: formData.trailer.text.trim(),
-        added_date: Date.now().toString(),
-      });
-
-      const movieDB = await getDBElement(doc(db, 'movies', slug));
-      if (movieDB) {
-        // setMovies((await getDBCollection(collection(db, 'movies'))) as Movie[]);
-        setFormData(initialState);
+      if (dbMovie) {
+        toast.error('Такой фильм уже создан!');
+        return;
       } else {
-        console.log('Error');
+        const request = await createDBMovie({
+          slug: slug,
+          image: formData.image.text.trim(),
+          name: formData.name.text.trim(),
+          category: formData.category.text.trim(),
+          duration: formData.duration.text.trim(),
+          age: formData.age.text.trim(),
+          release_date: formData.release_date.text.trim(),
+          country: formData.country.text.trim(),
+          trailer: formData.trailer.text.trim(),
+          added_date: Date.now().toString(),
+        });
+
+        request ? toast.success('Фильм успешно создан!') : toast.error('Ошибка создания фильма!');
       }
     }
     setIsOpenModal(false);
   };
 
+  const handleCancelSubmit = () => {
+    setIsOpenModal(false);
+    setCurrentMovie(null);
+  };
+
   return (
-    <form onSubmit={handleSubmit} noValidate className='w-[700px] p-[30px]'>
-      <div className='mb-4'>
+    <form onSubmit={handleSubmit} noValidate className='w-[600px] flex flex-col gap-[20px]'>
+      <div>
         <label htmlFor='image' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Ccылка картинки
         </label>
         <CustomInput
+          id='image'
           name='image'
           value={formData.image.text}
           onChange={handleChange}
@@ -239,7 +286,7 @@ export default function MovieForm({
           error={formData.image.error}
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <label htmlFor='name' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Имя
         </label>
@@ -252,21 +299,7 @@ export default function MovieForm({
           error={formData.name.error}
         />
       </div>
-      {/* <div className='mb-4'>
-        <label htmlFor='rate' className='block mb-1 ml-1 text-xs font-medium text-white'>
-          Рейтинг (не обязательно)
-        </label>
-        <CustomInput
-          type='number'
-          name='rate'
-          value={formData.rate.text}
-          onChange={handleChange}
-          minValue={0}
-          maxValue={10}
-          placeholder='0-10'
-        />
-      </div> */}
-      <div className='mb-4'>
+      <div>
         <label htmlFor='release_date' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Дата выхода
         </label>
@@ -279,7 +312,7 @@ export default function MovieForm({
           error={formData.release_date.error}
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <label htmlFor='category' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Категория
         </label>
@@ -287,12 +320,12 @@ export default function MovieForm({
           name='category'
           value={formData.category.text}
           onChange={handleChange}
-          placeholder='	Фантастика, Боевики, Комедии, Приключения, Зарубежные'
+          placeholder='Фантастика, Боевики, Комедии, Приключения, Зарубежные'
           required={true}
           error={formData.category.error}
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <label htmlFor='country' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Страна
         </label>
@@ -305,7 +338,7 @@ export default function MovieForm({
           error={formData.country.error}
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <label htmlFor='duration' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Длительность
         </label>
@@ -318,7 +351,7 @@ export default function MovieForm({
           error={formData.duration.error}
         />
       </div>
-      <div className='mb-4'>
+      <div>
         <label htmlFor='age' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Возраст
         </label>
@@ -331,7 +364,7 @@ export default function MovieForm({
           error={formData.age.error}
         />
       </div>
-      <div className='mb-7'>
+      <div>
         <label htmlFor='trailer' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Идентификатор трейлера (Youtube)
         </label>
@@ -344,19 +377,18 @@ export default function MovieForm({
           error={formData.trailer.error}
         />
       </div>
-      <button
-        type='submit'
-        className='mr-3 text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-green-600 hover:bg-green-700'
-      >
-        {movie ? 'Обновить' : 'Добавить'}
-      </button>
-      <button
-        type='button'
-        onClick={() => setIsOpenModal(false)}
-        className='text-white font-medium rounded-lg text-sm px-5 py-2.5 text-center bg-red-600 hover:bg-red-700'
-      >
-        Отмена
-      </button>
+      <div className='flex gap-[20px] justify-end items-center'>
+        <button type='submit' className='rounded-lg px-[15px] py-[10px] bg-green-800'>
+          {movie ? 'Обновить' : 'Добавить'}
+        </button>
+        <button
+          type='button'
+          onClick={() => handleCancelSubmit()}
+          className='rounded-lg px-[15px] py-[10px] bg-red-800'
+        >
+          Отменить
+        </button>
+      </div>
     </form>
   );
 }

@@ -17,22 +17,17 @@ export async function getDBElement(collection: DocumentReference<DocumentData, D
     const docData = document.data();
     return docData;
   } catch (error) {
-    console.error('Error getting selected document:', error);
+    console.error('Ошибка получения документа!', error);
     return null;
   }
 }
 
 export async function createDBMovie(movie: Movie) {
   try {
-    const dbMovie = await getDBElement(doc(db, 'movies', movie.slug));
-    if (!dbMovie) {
-      await setDoc(doc(db, 'movies', movie.slug), movie);
-      return true;
-    } else {
-      return false;
-    }
+    await setDoc(doc(db, 'movies', movie.slug), movie);
+    return true;
   } catch (error) {
-    console.error('Error add user with this id', error);
+    console.error('Ошибка создания фильма!', error);
     return false;
   }
 }
@@ -42,7 +37,7 @@ export async function updateDBMovie(movieData: Movie) {
     await updateDoc(doc(db, 'movies', movieData.slug), movieData);
     return true;
   } catch (error) {
-    console.error(`Error add user with id - ${movieData.slug}:`, error);
+    console.error('Ошибка обновления данных фильма!', error);
     return false;
   }
 }
@@ -52,7 +47,7 @@ export async function deleteDBMovie(slug: string) {
     await deleteDoc(doc(db, 'movies', slug));
     return true;
   } catch (error) {
-    console.error(`Error delete movie with id - ${slug}:`, error);
+    console.error('Ошибка удаления фильма!', error);
     return false;
   }
 }
@@ -62,7 +57,7 @@ export async function createDBCategory(category: Category) {
     await setDoc(doc(db, 'categories', category.slug), category);
     return true;
   } catch (error) {
-    console.error('Ошибка добавления категории!', error);
+    console.error('Ошибка создания категории!', error);
     return false;
   }
 }
