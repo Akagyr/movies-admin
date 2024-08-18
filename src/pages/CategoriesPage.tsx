@@ -3,6 +3,7 @@ import CategoriesList from '../components/CategoriesList';
 import CategoryForm from '../components/CategoryForm';
 import { useState } from 'react';
 import CustomModal from '../components/custom/CustomModal';
+import Loading from '../components/Loading';
 
 export default function CategoriesPage() {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -19,7 +20,7 @@ export default function CategoriesPage() {
       >
         Добавить категорию
       </button>
-      <CategoriesList categories={categories!} />
+      {categories ? <CategoriesList categories={categories!} /> : <Loading />}
     </>
   );
 }

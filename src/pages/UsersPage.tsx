@@ -4,6 +4,7 @@ import { useState } from 'react';
 import CustomModal from '../components/custom/CustomModal';
 import UserForm from '../components/UserForm';
 import { User } from '../../types';
+import Loading from '../components/Loading';
 
 export default function UsersPage() {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -16,7 +17,11 @@ export default function UsersPage() {
         <UserForm user={currentUser} setIsOpenModal={setIsOpenModal} />
       </CustomModal>
       <h2 className='font-bold text-xl'>Пользователи:</h2>
-      <UsersList users={users!} setCurrentUser={setCurrentUser} setIsOpenModal={setIsOpenModal} />
+      {users ? (
+        <UsersList users={users!} setCurrentUser={setCurrentUser} setIsOpenModal={setIsOpenModal} />
+      ) : (
+        <Loading />
+      )}
     </>
   );
 }

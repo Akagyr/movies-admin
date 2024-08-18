@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Movie } from '../../types';
 import { deleteDBMovie } from '../database/databaseServices';
 import { toast } from 'react-toastify';

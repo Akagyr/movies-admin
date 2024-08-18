@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import { Movie } from '../../types';
 import MoviesListItem from './MoviesListItem';
+import Pagination from './Pagination';
 
 export default function MoviesList({
   movies,
@@ -10,7 +12,16 @@ export default function MoviesList({
   setCurrentMovie: (value: Movie) => void;
   setIsOpenModal: (value: boolean) => void;
 }) {
-  const showMovies = movies?.map((mov) => (
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const moviesPerPage = 4;
+  const totalPages = Math.ceil(movies.length / moviesPerPage);
+
+  const indexOfLastMovie = currentPage * moviesPerPage;
+  const indexOfFirstMovie = indexOfLastMovie - moviesPerPage;
+
+  const currentMovies = movies.slice(indexOfFirstMovie, indexOfLastMovie);
+
+  const showMovies = currentMovies?.map((mov) => (
     <MoviesListItem
       key={mov.slug}
       movie={mov}
@@ -19,5 +30,14 @@ export default function MoviesList({
     />
   ));
 
-  return <div className='flex flex-col gap-[20px] mt-[30px]'>{showMovies}</div>;
+  return (
+    <div className='flex flex-col gap-[20px] mt-[30px]'>
+      {showMovies}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        setCurrentPage={setCurrentPage}
+      />
+    </div>
+  );
 }

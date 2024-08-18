@@ -4,6 +4,7 @@ import MovieForm from '../components/MovieForm';
 import { useState } from 'react';
 import { Movie } from '../../types';
 import CustomModal from '../components/custom/CustomModal';
+import Loading from '../components/Loading';
 
 export default function MoviesPage() {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -25,11 +26,15 @@ export default function MoviesPage() {
       >
         Добавить новый фильм
       </button>
-      <MoviesList
-        movies={movies!}
-        setCurrentMovie={setCurrentMovie}
-        setIsOpenModal={setIsOpenModal}
-      />
+      {movies ? (
+        <MoviesList
+          movies={movies!}
+          setCurrentMovie={setCurrentMovie}
+          setIsOpenModal={setIsOpenModal}
+        />
+      ) : (
+        <Loading />
+      )}
     </>
   );
 }

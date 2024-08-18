@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { Category } from '../../types';
 import { toast } from 'react-toastify';
 import { deleteDBCategory } from '../database/databaseServices';
