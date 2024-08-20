@@ -148,7 +148,7 @@ export default function MovieForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { image, name, category, duration, age, release_date, country, trailer } = formData;
-    const urlPattern = /^https:\/\/static\.hdrezka\.ac\/(.*)$/;
+    const urlPattern = /^https:\/\/static\.hdrezka\.ac\/.*\.(jpg|jpeg)$/i;
     const isValidImageURL = urlPattern.test(image.text);
 
     if (
@@ -170,7 +170,7 @@ export default function MovieForm({
             image.text.trim() === ''
               ? 'Поле не может быть пустым'
               : !isValidImageURL
-              ? 'Поле должно быть ссылкой и начинатся с "https://static.hdrezka.ac/"'
+              ? 'Ссылка должна начинатся с "https://static.hdrezka.ac/" и иметь расширение .jpg или .jpeg'
               : image.error,
         },
         name: {
@@ -223,6 +223,7 @@ export default function MovieForm({
           slug: movie.slug,
           image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
           name: formData.name.text.trim() ? formData.name.text.trim() : movie.name,
+          rates: movie.rates,
           category: formData.category.text.trim() ? formData.category.text.trim() : movie.category,
           duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
           age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
@@ -250,6 +251,7 @@ export default function MovieForm({
           slug: slug,
           image: formData.image.text.trim(),
           name: formData.name.text.trim(),
+          rates: [],
           category: formData.category.text.trim(),
           duration: formData.duration.text.trim(),
           age: formData.age.text.trim(),
