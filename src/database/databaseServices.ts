@@ -74,7 +74,7 @@ export async function deleteDBCategory(slug: string) {
 
 export async function updateDBUser(userData: User) {
   try {
-    await updateDoc(doc(db, 'users', userData.uid), userData);
+    await updateDoc(doc(db, 'users', userData.slug), userData);
     return true;
   } catch (error) {
     console.error('Ошибка обновления пользователя!', error);
@@ -82,9 +82,9 @@ export async function updateDBUser(userData: User) {
   }
 }
 
-export async function deleteDBUser(uid: string) {
+export async function deleteDBUser(slug: string) {
   try {
-    await deleteDoc(doc(db, 'users', uid));
+    await deleteDoc(doc(db, 'users', slug));
     return true;
   } catch (error) {
     console.error('Ошибка удаления пользователя!', error);

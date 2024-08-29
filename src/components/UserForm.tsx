@@ -15,21 +15,23 @@ export default function UserForm({
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (currentRole === user?.role) {
-      toast.error(`Пользователь уже является - ${currentRole} !`);
-    } else {
-      const request = await updateDBUser({
-        uid: user!.uid,
-        displayName: user!.displayName,
-        email: user!.email,
-        role: currentRole,
-      });
+    if (user) {
+      if (currentRole === user.role) {
+        toast.error(`Пользователь уже является - ${currentRole} !`);
+      } else {
+        const request = await updateDBUser({
+          slug: user.slug,
+          name: user.name,
+          email: user.email,
+          role: currentRole,
+        });
 
-      request
-        ? toast.success('Данные пользователя успешно обновлены!')
-        : toast.error('Ошибка обновления данных пользователя!');
+        request
+          ? toast.success('Данные пользователя успешно обновлены!')
+          : toast.error('Ошибка обновления данных пользователя!');
 
-      setIsOpenModal(false);
+        setIsOpenModal(false);
+      }
     }
   };
 

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { User } from '../../types';
 import UsersListItem from './UsersListItem';
 import Pagination from './Pagination';
+import NoElements from './NoElements';
 
 export default function UsersList({
   users,
@@ -23,7 +24,7 @@ export default function UsersList({
 
   const showUsers = currentUsers?.map((user) => (
     <UsersListItem
-      key={user.uid}
+      key={user.slug}
       user={user}
       setCurrentUser={setCurrentUser}
       setIsOpenModal={setIsOpenModal}
@@ -31,13 +32,19 @@ export default function UsersList({
   ));
 
   return (
-    <div className='flex flex-col gap-[20px] mt-[15px]'>
-      {showUsers}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
+    <div className='flex flex-col gap-[20px] h-full'>
+      {showUsers.length === 0 ? (
+        <NoElements />
+      ) : (
+        <>
+          {showUsers}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -5,14 +5,20 @@ import { useState } from 'react';
 import { Movie } from '../../types';
 import CustomModal from '../components/custom/CustomModal';
 import Loading from '../components/Loading';
+import CustomSearchInput from '../components/custom/CustomSearchInput';
 
 export default function MoviesPage() {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [currentMovie, setCurrentMovie] = useState<Movie | null>(null);
   const movies = useGetMovies();
+  const [filteredMovies, setFilteredMovies] = useState<Movie[] | null>(null);
+
+  if (!movies) {
+    return <Loading />;
+  }
 
   return (
-    <>
+    <div className='flex flex-col gap-[25px] h-full'>
       <CustomModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
         <MovieForm
           movie={currentMovie}
@@ -26,15 +32,12 @@ export default function MoviesPage() {
       >
         Добавить новый фильм
       </button>
-      {movies ? (
-        <MoviesList
-          movies={movies!}
-          setCurrentMovie={setCurrentMovie}
-          setIsOpenModal={setIsOpenModal}
-        />
-      ) : (
-        <Loading />
-      )}
-    </>
+      <CustomSearchInput items={movies} setFilteredItems={setFilteredMovies} />
+      <MoviesList
+        movies={filteredMovies ? filteredMovies : movies}
+        setCurrentMovie={setCurrentMovie}
+        setIsOpenModal={setIsOpenModal}
+      />
+    </div>
   );
 }

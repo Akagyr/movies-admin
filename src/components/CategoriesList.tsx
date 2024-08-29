@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Category } from '../../types';
 import CategoriesListItem from './CategoriesListItem';
 import Pagination from './Pagination';
+import NoElements from './NoElements';
 
 export default function CategoriesList({ categories }: { categories: Category[] }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -18,13 +19,19 @@ export default function CategoriesList({ categories }: { categories: Category[] 
   ));
 
   return (
-    <div className='flex flex-col gap-[20px] mt-[30px]'>
-      {showCategories}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
+    <div className='flex flex-col gap-[20px] h-full'>
+      {showCategories.length === 0 ? (
+        <NoElements />
+      ) : (
+        <>
+          {showCategories}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 }

@@ -7,8 +7,8 @@ export default function MainLayout() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const uid = sessionStorage.getItem('uid');
-    if (!uid) {
+    const loginAccess = sessionStorage.getItem('loginAccess');
+    if (!loginAccess) {
       return navigate('/login');
     }
   }, []);

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Movie } from '../../types';
 import MoviesListItem from './MoviesListItem';
 import Pagination from './Pagination';
+import NoElements from './NoElements';
 
 export default function MoviesList({
   movies,
@@ -31,13 +32,19 @@ export default function MoviesList({
   ));
 
   return (
-    <div className='flex flex-col gap-[20px] mt-[30px]'>
-      {showMovies}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        setCurrentPage={setCurrentPage}
-      />
+    <div className='flex flex-col gap-[20px] h-full'>
+      {showMovies.length === 0 ? (
+        <NoElements />
+      ) : (
+        <>
+          {showMovies}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      )}
     </div>
   );
 }

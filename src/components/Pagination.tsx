@@ -20,7 +20,7 @@ export default function Pagination({
   };
 
   return (
-    <div className='flex gap-[10px] items-center justify-center mt-[20px]'>
+    <div className='flex gap-[10px] items-center justify-center'>
       <button
         onClick={handlePrevPage}
         disabled={currentPage === 1}

@@ -23,10 +23,10 @@ export type Category = {
 };
 
 export type User = {
-  uid: string;
-  displayName: string;
+  slug: string;
+  name: string;
   email: string;
-  photoURL?: string;
+  photo?: string;
   role: 'user' | 'admin';
   favourites?: Favourite[];
   seeLater?: SeeLater[];

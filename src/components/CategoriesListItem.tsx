@@ -21,7 +21,7 @@ export default function CategoriesListItem({
   };
 
   return (
-    <div className='flex gap-[20px] items-center justify-between bg-red-800/10 rounded-lg py-[10px] px-[20px]'>
+    <div className='flex gap-[20px] items-center justify-between bg-red-800/10 rounded-lg py-[12px] px-[20px]'>
       <h2 className='font-semibold'>{category.name}</h2>
       <button
         onClick={() => handleDeleteCategory(category.slug)}
