@@ -22,7 +22,6 @@ export default function UsersPage() {
       <CustomModal isOpen={isOpenModal} setIsOpen={setIsOpenModal}>
         <UserForm user={currentUser} setIsOpenModal={setIsOpenModal} />
       </CustomModal>
-      <h2 className='font-bold text-xl'>Пользователи:</h2>
       <CustomSearchInput items={users} setFilteredItems={setFilteredUsers} />
       <UsersList
         users={filteredUsers ? filteredUsers : users}

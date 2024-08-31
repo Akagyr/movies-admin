@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { User } from '../../types';
 import UsersListItem from './UsersListItem';
 import Pagination from './Pagination';
-import NoElements from './NoElements';
+import NotFoundElements from './NotFoundElements';
 
 export default function UsersList({
   users,
@@ -14,7 +14,7 @@ export default function UsersList({
   setIsOpenModal: (value: boolean) => void;
 }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const usersPerPage = 5;
+  const usersPerPage = 6;
   const totalPages = Math.ceil(users.length / usersPerPage);
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -34,7 +34,7 @@ export default function UsersList({
   return (
     <div className='flex flex-col gap-[20px] h-full'>
       {showUsers.length === 0 ? (
-        <NoElements />
+        <NotFoundElements />
       ) : (
         <>
           {showUsers}

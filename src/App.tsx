@@ -8,6 +8,7 @@ import 'react-responsive-modal/styles.css';
 import { ToastContainer } from 'react-toastify';
 import UsersPage from './pages/UsersPage';
 import CategoriesPage from './pages/CategoriesPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route index element={<MoviesPage />} />
           <Route path='users' element={<UsersPage />} />
           <Route path='categories' element={<CategoriesPage />} />
+          <Route path='*' element={<NotFoundPage />} />
         </Route>
         <Route element={<LoginLayout />}>
           <Route path='login' element={<LoginPage />} />

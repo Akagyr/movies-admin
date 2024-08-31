@@ -18,7 +18,7 @@ export default function MainLayout() {
       <Header />
       <div className='grid grid-cols-[20%_1fr] xl:grid-cols-[18%_1fr] 2xl:grid-cols-[16%_1fr] overflow-hidden h-full'>
         <Sidebar />
-        <main className='py-[50px] px-[100px] overflow-y-auto'>
+        <main className='py-[40px] px-[100px] overflow-y-auto'>
           <Outlet />
         </main>
       </div>

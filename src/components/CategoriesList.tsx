@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Category } from '../../types';
 import CategoriesListItem from './CategoriesListItem';
 import Pagination from './Pagination';
-import NoElements from './NoElements';
+import NotFoundElements from './NotFoundElements';
 
 export default function CategoriesList({ categories }: { categories: Category[] }) {
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -21,7 +21,7 @@ export default function CategoriesList({ categories }: { categories: Category[] 
   return (
     <div className='flex flex-col gap-[20px] h-full'>
       {showCategories.length === 0 ? (
-        <NoElements />
+        <NotFoundElements />
       ) : (
         <>
           {showCategories}

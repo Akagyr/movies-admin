@@ -30,10 +30,10 @@ export default function UsersListItem({
   };
 
   return (
-    <div className='grid grid-cols-[100px_1fr_1fr_1fr_200px] gap-[30px] items-center text-center bg-red-800/10 rounded-lg py-[10px] px-[20px]'>
+    <div className='grid grid-cols-[100px_250px_1fr_1fr_200px] gap-[30px] items-center text-center bg-red-800/10 rounded-xl py-[10px] px-[20px]'>
       <img
         src={user.photo}
-        className='rounded-full w-[80px] place-self-center'
+        className='rounded-full w-[70px] place-self-center'
         alt={user.name}
       />
       <h2 className='text-lg font-semibold'>{user.name}</h2>

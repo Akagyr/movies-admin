@@ -22,7 +22,7 @@ export default function Pagination({
   return (
     <div className='flex gap-[10px] items-center justify-center'>
       <button
-        onClick={handlePrevPage}
+        onClick={() => handlePrevPage()}
         disabled={currentPage === 1}
         className='px-[15px] py-[8px] bg-red-800 disabled:bg-red-800/50 rounded-lg'
       >
@@ -32,7 +32,7 @@ export default function Pagination({
         Страница {currentPage} из {totalPages}
       </span>
       <button
-        onClick={handleNextPage}
+        onClick={() => handleNextPage()}
         disabled={currentPage === totalPages}
         className='px-[15px] py-[8px] bg-red-800 disabled:bg-red-800/50 rounded-lg'
       >
