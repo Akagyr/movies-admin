@@ -10,6 +10,7 @@ export type Movie = {
   country: string;
   trailer: string;
   added_date: string;
+  comments: Comment[];
 };
 
 export type Rate = {
@@ -20,6 +21,15 @@ export type Rate = {
 export type Category = {
   slug: string;
   name: string;
+};
+
+export type Comment = {
+  slug: string;
+  userSlug: string;
+  userName: string;
+  userPhoto: string;
+  text: string;
+  date_adding: number;
 };
 
 export type User = {

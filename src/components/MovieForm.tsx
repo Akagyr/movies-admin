@@ -233,6 +233,7 @@ export default function MovieForm({
           country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
           trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
           added_date: movie.added_date,
+          comments: movie.comments,
         });
 
         request
@@ -259,6 +260,7 @@ export default function MovieForm({
           country: formData.country.text.trim(),
           trailer: formData.trailer.text.trim(),
           added_date: Date.now().toString(),
+          comments: [],
         });
 
         request ? toast.success('Фильм успешно создан!') : toast.error('Ошибка создания фильма!');
