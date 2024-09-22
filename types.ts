@@ -6,7 +6,7 @@ export type Movie = {
   category: string;
   duration: string;
   age: string;
-  release_date: string;
+  release_date: number;
   country: string;
   trailer: string;
   added_date: string;

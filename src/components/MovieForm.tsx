@@ -6,6 +6,7 @@ import { doc } from 'firebase/firestore';
 import { db } from '../database/firebase';
 import { slugCreate } from '../helpers/slugHelper';
 import { toast } from 'react-toastify';
+import { convertDateToTimestamp } from '../helpers/convertDateToTimestampHelper';
 
 type MovieForm = {
   image: {
@@ -114,7 +115,7 @@ export default function MovieForm({
         },
         release_date: {
           ...prevState.release_date,
-          text: movie.release_date,
+          text: movie.release_date.toString(),
         },
         country: {
           ...prevState.country,
@@ -212,13 +213,14 @@ export default function MovieForm({
         category.text.trim() === movie.category &&
         duration.text.trim() === movie.duration &&
         age.text.trim() === movie.age &&
-        release_date.text.trim() === movie.release_date &&
+        release_date.text.trim() === movie.release_date.toString() &&
         country.text.trim() === movie.country &&
         trailer.text.trim() === movie.trailer
       ) {
         toast.error(`У фильма не изменились данные!`);
         return;
       } else {
+        const convertedRealesedDate = convertDateToTimestamp(formData.release_date.text.trim());
         const request = await updateDBMovie({
           slug: movie.slug,
           image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
@@ -228,7 +230,7 @@ export default function MovieForm({
           duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
           age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
           release_date: formData.release_date.text.trim()
-            ? formData.release_date.text.trim()
+            ? convertedRealesedDate!
             : movie.release_date,
           country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
           trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
@@ -248,6 +250,7 @@ export default function MovieForm({
         toast.error('Такой фильм уже создан!');
         return;
       } else {
+        const convertedRealesedDate = convertDateToTimestamp(formData.release_date.text.trim());
         const request = await createDBMovie({
           slug: slug,
           image: formData.image.text.trim(),
@@ -256,7 +259,7 @@ export default function MovieForm({
           category: formData.category.text.trim(),
           duration: formData.duration.text.trim(),
           age: formData.age.text.trim(),
-          release_date: formData.release_date.text.trim(),
+          release_date: convertedRealesedDate!,
           country: formData.country.text.trim(),
           trailer: formData.trailer.text.trim(),
           added_date: Date.now().toString(),
