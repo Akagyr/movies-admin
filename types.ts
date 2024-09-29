@@ -9,7 +9,7 @@ export type Movie = {
   release_date: number;
   country: string;
   trailer: string;
-  added_date: string;
+  added_date: number;
   comments: Comment[];
 };
 

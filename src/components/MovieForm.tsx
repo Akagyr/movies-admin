@@ -262,7 +262,7 @@ export default function MovieForm({
           release_date: convertedRealesedDate!,
           country: formData.country.text.trim(),
           trailer: formData.trailer.text.trim(),
-          added_date: Date.now().toString(),
+          added_date: Date.now(),
           comments: [],
         });
 
