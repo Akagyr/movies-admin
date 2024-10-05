@@ -4,12 +4,15 @@ export type Movie = {
   name: string;
   rates?: Rate[];
   category: string;
+  director: string;
+  actors: string;
   duration: string;
   age: string;
-  release_date: number;
+  release_date: string;
   country: string;
   trailer: string;
   added_date: number;
+  brief_plot: string;
   comments: Comment[];
 };
 

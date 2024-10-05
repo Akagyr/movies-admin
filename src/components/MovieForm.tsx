@@ -6,7 +6,6 @@ import { doc } from 'firebase/firestore';
 import { db } from '../database/firebase';
 import { slugCreate } from '../helpers/slugHelper';
 import { toast } from 'react-toastify';
-import { convertDateToTimestamp } from '../helpers/convertDateToTimestampHelper';
 
 type MovieForm = {
   image: {
@@ -18,6 +17,14 @@ type MovieForm = {
     error: string | null;
   };
   category: {
+    text: string;
+    error: string | null;
+  };
+  director: {
+    text: string;
+    error: string | null;
+  };
+  actors: {
     text: string;
     error: string | null;
   };
@@ -38,6 +45,10 @@ type MovieForm = {
     error: string | null;
   };
   trailer: {
+    text: string;
+    error: string | null;
+  };
+  brief_plot: {
     text: string;
     error: string | null;
   };
@@ -56,6 +67,14 @@ const initialState = {
     text: '',
     error: null,
   },
+  director: {
+    text: '',
+    error: null,
+  },
+  actors: {
+    text: '',
+    error: null,
+  },
   duration: {
     text: '',
     error: null,
@@ -73,6 +92,10 @@ const initialState = {
     error: null,
   },
   trailer: {
+    text: '',
+    error: null,
+  },
+  brief_plot: {
     text: '',
     error: null,
   },
@@ -105,6 +128,14 @@ export default function MovieForm({
           ...prevState.category,
           text: movie.category,
         },
+        director: {
+          ...prevState.director,
+          text: movie.director,
+        },
+        actors: {
+          ...prevState.actors,
+          text: movie.actors,
+        },
         duration: {
           ...prevState.duration,
           text: movie.duration,
@@ -124,6 +155,10 @@ export default function MovieForm({
         trailer: {
           ...prevState.trailer,
           text: movie.trailer,
+        },
+        brief_plot: {
+          ...prevState.brief_plot,
+          text: movie.brief_plot,
         },
       }));
     }
@@ -148,7 +183,19 @@ export default function MovieForm({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const { image, name, category, duration, age, release_date, country, trailer } = formData;
+    const {
+      image,
+      name,
+      category,
+      duration,
+      age,
+      release_date,
+      country,
+      trailer,
+      director,
+      actors,
+      brief_plot,
+    } = formData;
     const urlPattern = /^https:\/\/static\.hdrezka\.ac\/.*\.(jpg|jpeg)$/i;
     const isValidImageURL = urlPattern.test(image.text);
 
@@ -161,7 +208,10 @@ export default function MovieForm({
       age.text.trim() === '' ||
       release_date.text.trim() === '' ||
       country.text.trim() === '' ||
-      trailer.text.trim() === ''
+      trailer.text.trim() === '' ||
+      director.text.trim() === '' ||
+      actors.text.trim() === '' ||
+      brief_plot.text.trim() === ''
     ) {
       setFormData((prevState) => ({
         ...prevState,
@@ -202,6 +252,18 @@ export default function MovieForm({
           ...prevState.trailer,
           error: trailer.text.trim() === '' ? 'Поле не может быть пустым' : trailer.error,
         },
+        director: {
+          ...prevState.director,
+          error: director.text.trim() === '' ? 'Поле не может быть пустым' : director.error,
+        },
+        actors: {
+          ...prevState.actors,
+          error: actors.text.trim() === '' ? 'Поле не может быть пустым' : actors.error,
+        },
+        brief_plot: {
+          ...prevState.brief_plot,
+          error: brief_plot.text.trim() === '' ? 'Поле не может быть пустым' : brief_plot.error,
+        },
       }));
       return;
     }
@@ -215,12 +277,14 @@ export default function MovieForm({
         age.text.trim() === movie.age &&
         release_date.text.trim() === movie.release_date.toString() &&
         country.text.trim() === movie.country &&
-        trailer.text.trim() === movie.trailer
+        trailer.text.trim() === movie.trailer &&
+        director.text.trim() === movie.director &&
+        actors.text.trim() === movie.actors &&
+        brief_plot.text.trim() === movie.brief_plot
       ) {
         toast.error(`У фильма не изменились данные!`);
         return;
       } else {
-        const convertedRealesedDate = convertDateToTimestamp(formData.release_date.text.trim());
         const request = await updateDBMovie({
           slug: movie.slug,
           image: formData.image.text.trim() ? formData.image.text.trim() : movie.image,
@@ -230,12 +294,17 @@ export default function MovieForm({
           duration: formData.duration.text.trim() ? formData.duration.text.trim() : movie.duration,
           age: formData.age.text.trim() ? formData.age.text.trim() : movie.age,
           release_date: formData.release_date.text.trim()
-            ? convertedRealesedDate!
+            ? formData.release_date.text.trim()
             : movie.release_date,
           country: formData.country.text.trim() ? formData.country.text.trim() : movie.country,
           trailer: formData.trailer.text.trim() ? formData.trailer.text.trim() : movie.trailer,
           added_date: movie.added_date,
           comments: movie.comments,
+          director: formData.director.text.trim() ? formData.director.text.trim() : movie.director,
+          actors: formData.actors.text.trim() ? formData.actors.text.trim() : movie.actors,
+          brief_plot: formData.brief_plot.text.trim()
+            ? formData.brief_plot.text.trim()
+            : movie.brief_plot,
         });
 
         request
@@ -250,7 +319,6 @@ export default function MovieForm({
         toast.error('Такой фильм уже создан!');
         return;
       } else {
-        const convertedRealesedDate = convertDateToTimestamp(formData.release_date.text.trim());
         const request = await createDBMovie({
           slug: slug,
           image: formData.image.text.trim(),
@@ -259,11 +327,14 @@ export default function MovieForm({
           category: formData.category.text.trim(),
           duration: formData.duration.text.trim(),
           age: formData.age.text.trim(),
-          release_date: convertedRealesedDate!,
+          release_date: formData.release_date.text.trim(),
           country: formData.country.text.trim(),
           trailer: formData.trailer.text.trim(),
           added_date: Date.now(),
           comments: [],
+          director: formData.director.text.trim(),
+          actors: formData.actors.text.trim(),
+          brief_plot: formData.brief_plot.text.trim(),
         });
 
         request ? toast.success('Фильм успешно создан!') : toast.error('Ошибка создания фильма!');
@@ -294,6 +365,19 @@ export default function MovieForm({
         />
       </div>
       <div>
+        <label htmlFor='trailer' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Идентификатор трейлера (Youtube)
+        </label>
+        <CustomInput
+          name='trailer'
+          value={formData.trailer.text}
+          onChange={handleChange}
+          placeholder='EmH6VNG8QEE'
+          required={true}
+          error={formData.trailer.error}
+        />
+      </div>
+      <div>
         <label htmlFor='name' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Имя
         </label>
@@ -320,19 +404,6 @@ export default function MovieForm({
         />
       </div>
       <div>
-        <label htmlFor='category' className='block mb-1 ml-1 text-xs font-medium text-white'>
-          Категория
-        </label>
-        <CustomInput
-          name='category'
-          value={formData.category.text}
-          onChange={handleChange}
-          placeholder='Фантастика, Боевики, Комедии, Приключения, Зарубежные'
-          required={true}
-          error={formData.category.error}
-        />
-      </div>
-      <div>
         <label htmlFor='country' className='block mb-1 ml-1 text-xs font-medium text-white'>
           Страна
         </label>
@@ -346,16 +417,29 @@ export default function MovieForm({
         />
       </div>
       <div>
-        <label htmlFor='duration' className='block mb-1 ml-1 text-xs font-medium text-white'>
-          Длительность
+        <label htmlFor='director' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Режиссер
         </label>
         <CustomInput
-          name='duration'
-          value={formData.duration.text}
+          name='director'
+          value={formData.director.text}
           onChange={handleChange}
-          placeholder='108 мин.'
+          placeholder='Джеймс Уоткинс'
           required={true}
-          error={formData.duration.error}
+          error={formData.director.error}
+        />
+      </div>
+      <div>
+        <label htmlFor='category' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Категория
+        </label>
+        <CustomInput
+          name='category'
+          value={formData.category.text}
+          onChange={handleChange}
+          placeholder='Фантастика, Боевики, Комедии, Приключения, Зарубежные'
+          required={true}
+          error={formData.category.error}
         />
       </div>
       <div>
@@ -372,16 +456,42 @@ export default function MovieForm({
         />
       </div>
       <div>
-        <label htmlFor='trailer' className='block mb-1 ml-1 text-xs font-medium text-white'>
-          Идентификатор трейлера (Youtube)
+        <label htmlFor='duration' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Длительность
         </label>
         <CustomInput
-          name='trailer'
-          value={formData.trailer.text}
+          name='duration'
+          value={formData.duration.text}
           onChange={handleChange}
-          placeholder='EmH6VNG8QEE'
+          placeholder='108 мин.'
           required={true}
-          error={formData.trailer.error}
+          error={formData.duration.error}
+        />
+      </div>
+      <div>
+        <label htmlFor='actors' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Актеры
+        </label>
+        <CustomInput
+          name='actors'
+          value={formData.actors.text}
+          onChange={handleChange}
+          placeholder='Райан Рейнольдс, ...'
+          required={true}
+          error={formData.actors.error}
+        />
+      </div>
+      <div>
+        <label htmlFor='brief_plot' className='block mb-1 ml-1 text-xs font-medium text-white'>
+          Краткий сюжет
+        </label>
+        <CustomInput
+          name='brief_plot'
+          value={formData.brief_plot.text}
+          onChange={handleChange}
+          placeholder='Про что фильм...'
+          required={true}
+          error={formData.brief_plot.error}
         />
       </div>
       <div className='flex gap-[20px] justify-end items-center'>

@@ -1,7 +1,6 @@
 import { Movie } from '../../types';
 import { deleteDBMovie } from '../database/databaseServices';
 import { toast } from 'react-toastify';
-import { convertTimestampToDate } from '../helpers/convertTimestampToDateHelper';
 
 export default function MoviesListItem({
   movie,
@@ -12,7 +11,6 @@ export default function MoviesListItem({
   setCurrentMovie: (value: Movie) => void;
   setIsOpenModal: (value: boolean) => void;
 }) {
-  const convertedDate = convertTimestampToDate(movie.release_date);
 
   const handleDeleteMovie = async (slug: string) => {
     try {
@@ -38,7 +36,7 @@ export default function MoviesListItem({
       <h2 className='text-lg font-semibold'>{movie.name}</h2>
       <p>{movie.category}</p>
       <p>{movie.country}</p>
-      <p>{convertedDate}</p>
+      <p>{movie.release_date}</p>
       <p>{movie.age}</p>
       <p>{movie.duration}</p>
       <div className='flex flex-col justify-evenly h-full items-center'>
